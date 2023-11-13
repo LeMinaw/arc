@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+
+  "configurations": [
+    {
+      "name": "Django dev server",
+      "type": "python",
+      "request": "launch",
+      "program": "./manage.py",
+      "args": [
+        "runserver"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+
+  ]
+}

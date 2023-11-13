@@ -1,0 +1,78 @@
+{% load static %}
+
+<input
+  type="hidden"
+  name="{{ widget.name }}"
+  value="{{ widget.value }}"
+  {% include "django/forms/widgets/attrs.html" %}
+>
+
+<div
+  {% for name, value in widget.editor_attrs.items %}
+    {% if value is not False %}
+      {{ name }}{% if value is not True %}="{{ value }}"{% endif %}
+    {% endif %}
+  {% endfor %}
+></div>
+
+<script type="module">
+  import { JSONEditor, toTextContent } from '{% static "catalog/js/vendor/vanilla-jsoneditor@0.18.12.min.js" %}'
+
+  const JSE_DARK_CLASS = 'jse-theme-dark'
+
+  const input = document.getElementById('{{ widget.attrs.id }}')
+  const target = document.getElementById('{{ widget.attrs.id }}_editor')
+
+  const editor = new JSONEditor({
+    target,
+    props: {
+      content: { text: input.value },
+      readOnly: input.hasAttribute('disabled'),
+      onChange: (newContent, previousContent, { contentErrors, patchResult }) => {
+        input.value = toTextContent(newContent).text
+      }
+    }
+  })
+
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      const theme = mutation.target.getAttribute('data-theme')
+
+      switch (theme) {
+        case 'dark':
+          target.classList.add(JSE_DARK_CLASS)
+          break
+        case 'light':
+          target.classList.remove(JSE_DARK_CLASS)
+          break
+        default:
+          if (window.matchMedia('(prefers-color-scheme: dark)').matches)
+            target.classList.add(JSE_DARK_CLASS)
+          else
+            target.classList.remove(JSE_DARK_CLASS)
+      }
+    })
+  })
+
+  observer.observe(document.documentElement, {
+    attributeFilter: ['data-theme']
+  })
+</script>
+
+<style>
+  /* Override colors for default and dark themes so they match Django admin */
+  :root, .jse-theme-dark {
+    --jse-theme-color: var(--primary);
+    --jse-theme-color-highlight: var(--secondary);
+  }
+
+  /* Solve a conflict with Django admin own CSS */
+  .aligned .jse-hidden-input-label {
+    display: None;
+  }
+
+  /* Fix bottom of editor context menu being hidden */
+  .form-row {
+    overflow: unset;
+  }
+</style>

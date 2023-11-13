@@ -1,0 +1,24 @@
+{
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  "[django-html, html, vue, js, json]": {
+    "editor.tabSize": 2,
+  },
+
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true,
+      // "source.organizeImports": true
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.rulers": [
+      88
+    ],
+  },
+
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+  },
+}

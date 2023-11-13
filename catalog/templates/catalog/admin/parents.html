@@ -1,0 +1,9 @@
+{% for category in categories %}
+    {% if not forloop.first %}
+        <b>&gt;</b>
+    {% endif %}
+    
+    <a href="{% url 'admin:catalog_category_change' category.id %}">
+        {{ category }}        
+    </a>
+{% endfor %}
