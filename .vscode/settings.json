@@ -1,24 +1,26 @@
 {
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
+  "prettier.printWidth": 88,
+  "prettier.semi": false,
 
-  "[django-html, html, vue, js, json]": {
-    "editor.tabSize": 2,
+  "[django-html][html][vue][javascript][json][jsonc]": {
+    "editor.tabSize": 2
+  },
+
+  "[html][vue][javascript][json][jsonc]": {
+    "editor.formatOnSave": true,
+    "editor.rulers": [88],
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
 
   "[python]": {
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll": true,
+      "source.fixAll": true
       // "source.organizeImports": true
     },
     "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.rulers": [
-      88
-    ],
-  },
-
-  "[vue]": {
-    "editor.defaultFormatter": "Vue.volar"
-  },
+    "editor.rulers": [88]
+  }
 }

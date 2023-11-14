@@ -3,7 +3,7 @@
 
   "configurations": [
     {
-      "name": "Django dev server",
+      "name": "Django",
       "type": "python",
       "request": "launch",
       "program": "./manage.py",
@@ -13,6 +13,28 @@
       "console": "integratedTerminal",
       "justMyCode": true
     },
+    {
+      "name": "Vite",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/arc-client/",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "console": "integratedTerminal",
+    }
+  ],
 
-  ]
+  "compounds": [
+    {
+      "name": "Django + Vite",
+      "configurations": [
+        "Django",
+        "Vite"
+      ],
+      "stopAll": true
+    }
+  ],
 }
