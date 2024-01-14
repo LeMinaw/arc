@@ -27,11 +27,17 @@
 </script>
 
 <template>
-  <div class="alert m-6">
-    <div class="flex w-full items-center gap-2 text-lg">
+  <div :class="'w-fit m-6 p-6 shadow-lg ' + props.class">
+    <div class="flex items-center gap-2 text-lg">
       <icon class="w-8" v-if="icon" />
 
       <slot></slot>
     </div>
   </div>
 </template>
+
+<style>
+  .alert-error {
+    @apply bg-red-500 border border-red-700 shadow-red-700/40 text-zinc-950;
+  }
+</style>

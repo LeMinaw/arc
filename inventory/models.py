@@ -18,6 +18,7 @@ class Item(Model):
     product = ForeignKey(
         "catalog.Product",
         on_delete=CASCADE,
+        related_name="stock",
         verbose_name="produit",
     )
     in_stock = BooleanField(
@@ -38,10 +39,15 @@ class Item(Model):
     )
 
     class Meta:
+        get_latest_by = "mod_date"
         verbose_name = "objet"
 
     def __str__(self):
         return str(self.product)
+
+    @property
+    def test_bench(self):
+        return getattr(self.product.kind, "test_bench", None)
 
 
 class TestBench(Model):
@@ -104,7 +110,7 @@ class Test(Model):
         self._validate_test_data()
 
     def _validate_test_data(self):
-        if not (bench := getattr(self.item.product.kind, "test_bench", None)):
+        if not (bench := self.item.test_bench):
             raise ValidationError(
                 f"Aucun banc d'essai défini pour le type de produit {self.kind}"
             )

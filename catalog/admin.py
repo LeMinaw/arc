@@ -79,7 +79,7 @@ class LineAdmin(BaseAdmin):
 
 @register(Category)
 class CategoryAdmin(BaseAdmin):
-    list_display = ["__str__", "parents"]
+    list_display = ["__str__", "parents", "slug"]
 
     ordering = ["name"]
 
@@ -89,11 +89,13 @@ class CategoryAdmin(BaseAdmin):
 
     search_fields = ["name"]
 
+    prepopulated_fields = {"slug": ["name"]}
+
     fieldsets = [
         (
             None,
             {
-                "fields": [("parents", "parent"), "name", "specs_schema"],
+                "fields": [("parents", "parent"), ("name", "slug"), "specs_schema"],
             },
         ),
         (
@@ -142,7 +144,7 @@ class ProductAdmin(BaseAdmin):
             {
                 "fields": [
                     ("kind", "line"),
-                    ("reference", "link"),
+                    ("reference", "link", "image"),
                     ("specs", "specs_schema"),
                 ],
             },

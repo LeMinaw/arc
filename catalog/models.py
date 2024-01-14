@@ -4,8 +4,10 @@ from django.db.models import (
     SET_NULL,
     CharField,
     ForeignKey,
+    ImageField,
     JSONField,
     Model,
+    SlugField,
     URLField,
 )
 
@@ -63,6 +65,11 @@ class Category(Model):
     name = CharField(
         max_length=32,
         verbose_name="nom",
+    )
+    slug = SlugField(
+        max_length=32,
+        unique=True,
+        verbose_name="identifiant",
     )
     specs_schema = JSONField(
         max_length=1024,
@@ -142,6 +149,12 @@ class Product(Model):
         blank=True,
         verbose_name="URL",
         help_text="URL du produit sur le site du fabriquant",
+    )
+    image = ImageField(
+        upload_to="products",
+        blank=True,
+        verbose_name="image",
+        help_text="Image d'illustration du produit.",
     )
     specs = JSONField(
         max_length=1024,
