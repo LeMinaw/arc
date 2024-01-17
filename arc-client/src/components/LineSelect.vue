@@ -1,13 +1,10 @@
 <script setup>
-  import { computed, ref, watch } from "vue"
+  import { computed, ref, watch, watchEffect } from "vue"
 
-  import {
-    Listbox,
-    ListboxButton,
-    ListboxOptions,
-    ListboxOption,
-  } from "@headlessui/vue"
-  import { ChevronDownIcon } from "@heroicons/vue/24/outline"
+  import Listbox from "./ui/listbox/Listbox.vue"
+  import ListboxButton from "./ui/listbox/ListboxButton.vue"
+  import ListboxOption from "./ui/listbox/ListboxOption.vue"
+  import ListboxOptions from "./ui/listbox/ListboxOptions.vue"
 
   const props = defineProps({
     lines: {
@@ -16,7 +13,7 @@
     },
   })
 
-  const selected = defineModel()
+  const filter = defineModel()
 
   const selectedLines = ref([])
   const selectedManufacturers = ref([])
@@ -29,17 +26,17 @@
     props.lines.filter(line => selectedManufacturers.value.includes(line.manufacturer))
   )
 
-  watch(
-    [selectedLines, selectedManufacturersLines],
-    ([selectedLines, selectedManufacturersLines]) => {
-      selected.value.length = 0
-      if (selectedLines.length) {
-        selected.value.push(...selectedLines)
-      } else {
-        selected.value.push(...selectedManufacturersLines)
-      }
+  watchEffect(() => {
+    filter.value = product => {
+      const linesToFilter = selectedLines.value.length
+        ? selectedLines.value
+        : selectedManufacturersLines.value
+
+      return linesToFilter.length
+        ? linesToFilter.map(line => line.id).includes(product.line_id)
+        : true
     }
-  )
+  })
 
   watch(selectedManufacturersLines, selectedManufacturersLines => {
     selectedLines.value = selectedLines.value.filter(line =>
@@ -47,45 +44,42 @@
     )
   })
 
-  const isDisabled = line => {
+  const isDisabled = line =>
     selectedManufacturers.value.length
-      ? !selectedManufacturersLines.value.includes(line.manufacturer)
+      ? !selectedManufacturersLines.value.includes(line)
       : false
-  }
 </script>
 
 <template>
-  Fabriquant
-  <Listbox v-model="selectedManufacturers" multiple>
-    <ListboxButton>
-      {{ selectedManufacturers.map(m => m.name).join(", ") || "Tous" }}
-      <ChevronDownIcon class="inline h-6" />
-    </ListboxButton>
+  <div class="mt-4">
+    <span class="mr-2">Fabriquant :</span>
 
-    <ListboxOptions>
-      <ListboxOption v-for="manufacturer in manufacturers" :value="manufacturer">
-        {{ manufacturer.name }}
-      </ListboxOption>
-    </ListboxOptions>
-  </Listbox>
+    <Listbox v-model="selectedManufacturers" multiple>
+      <ListboxButton>
+        {{ selectedManufacturers.map(m => m.name).join(", ") || "Tous" }}
+      </ListboxButton>
 
-  Gamme
+      <ListboxOptions>
+        <ListboxOption v-for="manufacturer in manufacturers" :value="manufacturer">
+          {{ manufacturer.name }}
+        </ListboxOption>
+      </ListboxOptions>
+    </Listbox>
+  </div>
 
-  <Listbox v-model="selectedLines" multiple>
-    <ListboxButton>
-      {{ selectedLines.map(m => m.name).join(", ") || "Toutes" }}
-      <ChevronDownIcon class="inline h-6" />
-    </ListboxButton>
+  <div class="mt-4">
+    <span class="mr-2">Gamme :</span>
 
-    <ListboxOptions>
-      <ListboxOption
-        v-for="line in lines"
-        :value="line"
-        :disabled="isDisabled(line)"
-        class="ui-disabled:text-red-500"
-      >
-        {{ line.manufacturer.name }} - {{ line.name }}
-      </ListboxOption>
-    </ListboxOptions>
-  </Listbox>
+    <Listbox v-model="selectedLines" multiple>
+      <ListboxButton>
+        {{ selectedLines.map(m => m.name).join(", ") || "Toutes" }}
+      </ListboxButton>
+
+      <ListboxOptions>
+        <ListboxOption v-for="line in lines" :value="line" :disabled="isDisabled(line)">
+          {{ line.manufacturer.name }} - {{ line.name }}
+        </ListboxOption>
+      </ListboxOptions>
+    </Listbox>
+  </div>
 </template>

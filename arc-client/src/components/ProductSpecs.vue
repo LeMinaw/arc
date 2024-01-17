@@ -18,10 +18,10 @@
 
       return {
         id,
-        title: field_schema.title,
+        title: field_schema ? field_schema.title : null,
         value,
-        unit: field_schema.unit,
-        description: field_schema.description,
+        unit: field_schema ? field_schema.unit : null,
+        description: field_schema ? field_schema.description : null,
       }
     })
   )
@@ -39,7 +39,11 @@
         />
         <b v-else>{{ value }} {{ unit }}</b>
       </p>
-      <div class="pl-1 flex items-center gap-1 text-sm text-zinc-700">
+
+      <div
+        v-if="description"
+        class="pl-1 flex items-center gap-1 text-sm text-zinc-700"
+      >
         <InformationCircleIcon class="h-6" /> <em>{{ description }}</em>
       </div>
     </li>
