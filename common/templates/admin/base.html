@@ -1,0 +1,49 @@
+{% extends 'admin/base.html' %}
+
+{% block extrastyle %}
+  {{ block.super }}
+
+  <style>
+    html[data-theme="light"],
+    :root {
+      --primary: #ea580c;
+      --secondary: #9a3412;
+      --accent: #fed7aa;
+
+      --header-color: #fed7aa;
+
+      --breadcrumbs-fg: #ffedd5;
+      --breadcrumbs-bg: #7c2d12;
+
+      --link-fg: #c2410c;
+      --link-hover-color: #9a3412;
+
+      --selected-row: #fed7aa;
+
+      --button-hover-bg: #c2410c;
+      --default-button-bg: #c2410c;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary: #7c2d12;
+
+        --link-fg: #fdba74;
+        --link-hover-color: #fb923c;
+        --link-selected-fg: #f97316;
+
+        --selected-row: #431407;
+      }
+    }
+
+    html[data-theme="dark"] {
+      --primary: #7c2d12;
+
+      --link-fg: #fb923c;
+      --link-hover-color: #f97316;
+      --link-selected-fg: #f97316;
+
+      --selected-row: #431407;
+    }
+  </style>
+{% endblock %}

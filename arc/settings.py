@@ -43,7 +43,9 @@ ROOT_URLCONF = "arc.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            BASE_DIR / "common" / "templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -128,7 +130,12 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^http://localhost(:[0-9]+)?$",
+    r"(.*?)",
 ]
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 CORS_URLS_REGEX = r"^/api/.*$"
 
