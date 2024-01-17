@@ -119,7 +119,7 @@ class ProductKindAdmin(CategoryAdmin):
     fieldsets = deepcopy(CategoryAdmin.fieldsets)
     fieldsets[0][1]["fields"] = [
         ("parents", "parent"),
-        ("name", "name_format"),
+        ("name", "slug", "name_format"),
         "specs_schema",
     ]
 
