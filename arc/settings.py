@@ -130,12 +130,7 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^http://localhost(:[0-9]+)?$",
-    r"(.*?)",
 ]
-
-
-CORS_ORIGIN_ALLOW_ALL = True
-
 
 CORS_URLS_REGEX = r"^/api/.*$"
 
