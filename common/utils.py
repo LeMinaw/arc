@@ -11,6 +11,17 @@ class JSONSetEncoder(JSONEncoder):
 
 def make_default_object_schema():
     return {
+        "$defs": {
+            "range": {
+                "type": "array",
+                "items": {
+                    "type": "number",
+                },
+                "minItems": 2,
+                "maxItems": 2,
+                "widget": "range",
+            },
+        },
         "type": "object",
         "properties": {},
         "required": set(),
