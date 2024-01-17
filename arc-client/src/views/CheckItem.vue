@@ -1,14 +1,14 @@
 <script setup>
-  import { computed, ref } from "vue"
+  import { ref } from "vue"
   import { ArrowPathIcon } from "@heroicons/vue/24/outline"
 
-  import { isDigit, capitalize } from "../business/utils"
-  import { formatRelativeTime, formatDatetime } from "../business/time"
+  import { isDigit } from "../business/utils"
+  import { formatDatetime } from "../business/time"
   import { fetchItem } from "../business/arc"
   import Title from "../components/ui/Title.vue"
-  import Subtitle from "../components/ui/Subtitle.vue"
   import Button from "../components/ui/Button.vue"
   import TestSummary from "../components/TestSummary.vue"
+  import Card from "../components/ui/Card.vue"
 
   const id = ref()
   const item = ref()
@@ -38,7 +38,7 @@
       disponibles.
     </p>
 
-    <form class="mx-2 my-4 p-2 bg-zinc-200 border border-zinc-300 shadow-md">
+    <Card as="form">
       <label class="text-lg text-zinc-700">Code d'identification de l'article</label>
 
       <div class="pt-2 flex justify-stretch">
@@ -52,66 +52,61 @@
 
         <Button @click.prevent="fetch">Valider</Button>
       </div>
-    </form>
+    </Card>
 
     <div v-if="loading" class="flex justify-center">
       <ArrowPathIcon class="w-16 animate-spin" />
     </div>
 
-    <div v-if="item" class="mx-2 my-4 bg-zinc-200 shadow-md">
-      <div class="p-2 text-lg font-bold bg-orange-400 text-zinc-950">
-        Correspondance trouvée
+    <Card v-if="item" title="Correspondance trouvée">
+      <h4 class="text-lg">Données de produit</h4>
+      <ul class="pl-2">
+        <li>
+          Gamme :
+          <b>{{ item.product.line_name || "N.C." }}</b>
+        </li>
+        <li>
+          Produit :
+          <b>{{ item.product.name }}</b>
+        </li>
+        <li>
+          Référence fabriquant :
+          <b>{{ item.product.reference || "N.C." }}</b>
+        </li>
+      </ul>
+
+      <h4 class="pt-2 text-lg">Données d'article</h4>
+      <ul class="pl-2">
+        <li>
+          État d'inventaire :
+          <b>{{ item.in_stock ? "En stock" : "Hors stock" }}</b>
+        </li>
+        <li v-if="!item.in_stock">
+          Sortie d'inventaire :
+          <b>{{ item.out_date }}</b>
+        </li>
+        <li>
+          Ajout à la base :
+          <b>{{ formatDatetime(item.add_date) }}</b>
+        </li>
+        <li>
+          Dernière modification :
+          <b>{{ formatDatetime(item.mod_date) }}</b>
+        </li>
+      </ul>
+
+      <h4 class="pt-2 text-lg">Données métrologiques</h4>
+      <div class="pl-2">
+        <TestSummary v-if="item.test" :item="item" />
+        <em v-else>Aucune donnée expérimentale n'est disponible.</em>
       </div>
-      <div class="p-2 border border-t-0 border-zinc-300">
-        <h4 class="text-lg">Données de produit</h4>
-        <ul class="pl-2">
-          <li>
-            Gamme :
-            <b>{{ item.product.line_name || "N.C." }}</b>
-          </li>
-          <li>
-            Produit :
-            <b>{{ item.product.name }}</b>
-          </li>
-          <li>
-            Référence fabriquant :
-            <b>{{ item.product.reference || "N.C." }}</b>
-          </li>
-        </ul>
 
-        <h4 class="pt-2 text-lg">Données d'article</h4>
-        <ul class="pl-2">
-          <li>
-            État d'inventaire :
-            <b>{{ item.in_stock ? "En stock" : "Hors stock" }}</b>
-          </li>
-          <li v-if="!item.in_stock">
-            Sortie d'inventaire :
-            <b>{{ item.out_date }}</b>
-          </li>
-          <li>
-            Ajout à la base :
-            <b>{{ formatDatetime(item.add_date) }}</b>
-          </li>
-          <li>
-            Dernière modification :
-            <b>{{ formatDatetime(item.mod_date) }}</b>
-          </li>
-        </ul>
-
-        <h4 class="pt-2 text-lg">Données métrologiques</h4>
-        <div class="pl-2">
-          <TestSummary v-if="item.test" :item="item" />
-          <em v-else>Aucune donnée expérimentale n'est disponible.</em>
-        </div>
-
-        <div class="pt-2 flex justify-end">
-          <a href="">
-            <Button>Voir la fiche produit</Button>
-          </a>
-        </div>
+      <div class="pt-2 flex justify-end">
+        <a href="">
+          <Button>Voir la fiche produit</Button>
+        </a>
       </div>
-    </div>
+    </Card>
   </div>
 </template>
 

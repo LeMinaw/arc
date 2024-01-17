@@ -1,16 +1,13 @@
 <script setup>
-  import { useRouter } from "vue-router"
   import { formatRelativeTime } from "../business/time"
 
   defineProps({ product: Object })
-
-  const router = useRouter()
 </script>
 
 <template>
-  <a
+  <router-link
     class="basis-72 flex-grow flex flex-col bg-zinc-200 shadow-lg shadow-zinc-500/30 hover:-translate-y-0.5 transition"
-    :href="router.resolve({ name: 'product', params: { id: product.id } }).href"
+    :to="{ name: 'product', params: { id: product.id } }"
   >
     <div class="flex text-xl font-bold bg-orange-400 text-zinc-900">
       <div class="flex-grow p-2">
@@ -48,5 +45,5 @@
         </p>
       </div>
     </div>
-  </a>
+  </router-link>
 </template>
