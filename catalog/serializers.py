@@ -49,13 +49,13 @@ class ProductSerializer(HyperlinkedModelSerializer):
     logo = SerializerMethodField()
 
     def get_line_id(self, obj):
-        return obj.line.id
+        return getattr(obj.line, "id", None)
 
     def get_line_name(self, obj):
         return str(obj.line)
 
     def get_logo(self, obj):
-        return obj.line.manufacturer.logo_url
+        return obj.line.manufacturer.logo_url if obj.line else None
 
     class Meta:
         model = Product

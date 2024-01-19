@@ -1,5 +1,5 @@
 <script setup>
-  import { ref, watch, watchEffect } from "vue"
+  import { ref, watchEffect } from "vue"
   import { useRoute } from "vue-router"
 
   import Title from "../components/ui/Title.vue"
@@ -25,19 +25,24 @@
   watchEffect(async () => {
     if (typeof product.value !== "undefined") {
       kind.value = await fetch(product.value.kind).then(r => r.json())
-      line.value = await fetch(product.value.line).then(r => r.json())
+      line.value =
+        product.value.line !== null
+          ? await fetch(product.value.line).then(r => r.json())
+          : null
     }
   })
 </script>
 
 <template>
-  <div v-if="product && kind && line">
-    <Title>{{ product.name }} - {{ kind.name }} {{ line.manufacturer.name }}</Title>
+  <div v-if="product && kind && (line || line === null)">
+    <Title>
+      {{ product.name }} - {{ kind.name }} {{ line ? line.manufacturer.name : "" }}
+    </Title>
 
     <CategoryBreadcrumb :categories="kind.parents" />
 
     <img
-      v-if="line.manufacturer.logo_url"
+      v-if="line && line.manufacturer.logo_url"
       class="w-64"
       :src="line.manufacturer.logo_url"
     />
@@ -52,10 +57,12 @@
       target="_blank"
       rel="noopener noreferrer"
     >
-      <Button> Voir sur le site de {{ line.manufacturer.name }} </Button>
+      <Button>
+        Voir sur le site {{ line ? `de ${line.manufacturer.name}` : "du fabriquant" }}
+      </Button>
     </a>
 
-    <p>
+    <p v-if="line">
       Dans la gamme <a href="">{{ line.name }}</a> de
       <a href="">{{ line.manufacturer.name }}</a>
     </p>
