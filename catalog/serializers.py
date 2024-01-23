@@ -52,7 +52,7 @@ class ProductSerializer(HyperlinkedModelSerializer):
         return getattr(obj.line, "id", None)
 
     def get_line_name(self, obj):
-        return str(obj.line)
+        return str(obj.line) if obj.line else None
 
     def get_logo(self, obj):
         return obj.line.manufacturer.logo_url if obj.line else None

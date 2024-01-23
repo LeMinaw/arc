@@ -6,12 +6,14 @@ import Error from "./views/Error.vue"
 import Index from "./views/Index.vue"
 import Product from "./views/Product.vue"
 import Products from "./views/Products.vue"
+import ManageItem from "./views/ManageItem.vue"
 
 const routes = [
   { path: "/", component: Index, name: "index" },
   { path: "/catalogue/:categories*", component: Products, name: "products" },
   { path: "/produit/:id(\\d+)", component: Product, name: "product" },
   { path: "/verification", component: CheckItem, name: "check" },
+  { path: "/gestion/objet/:id(\\d+)?", component: ManageItem, name: "manageItem" },
   { path: "/a-propos", component: About, name: "about" },
   {
     path: "/:pathMatch(.*)",

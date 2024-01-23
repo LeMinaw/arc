@@ -46,5 +46,13 @@ class ItemSerializer(HyperlinkedModelSerializer):
 
     class Meta:
         model = Item
-        fields = ["product", "in_stock", "add_date", "mod_date", "test", "test_bench"]
+        fields = [
+            "id",
+            "product",
+            "in_stock",
+            "add_date",
+            "mod_date",
+            "test",
+            "test_bench",
+        ]
         list_excluded_fields = ["test_bench"]

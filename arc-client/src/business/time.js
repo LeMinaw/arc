@@ -20,4 +20,5 @@ export const formatRelativeTime = date => {
   }
 }
 
-export const formatDatetime = date => new Date(date).toLocaleString()
+export const formatDatetime = date =>
+  date ? new Date(date).toLocaleString() : "jamais"
