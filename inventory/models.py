@@ -29,6 +29,16 @@ class Item(Model):
             "stock."
         ),
     )
+    specs = JSONField(
+        max_length=1024,
+        blank=True,
+        default=dict,
+        verbose_name="spécifications",
+        help_text=(
+            "Spécifications de l'objet. Elles seront validées par le schéma de "
+            "spécifications d'objets du type de produit sélectionné."
+        ),
+    )
     add_date = DateTimeField(
         auto_now_add=True,
         verbose_name="date d'ajout",
@@ -37,13 +47,33 @@ class Item(Model):
         auto_now=True,
         verbose_name="date de modification",
     )
+    out_date = DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name="date de sortie de stock",
+    )
 
     class Meta:
         get_latest_by = "mod_date"
         verbose_name = "objet"
 
     def __str__(self):
+        if name_format := self.product.kind.item_name_format:
+            return name_format.format(
+                **(self.product.specs | self.specs), PRODUCT=str(self.product)
+            )
         return str(self.product)
+
+    def clean(self):
+        self._validate_specs()
+
+    def _validate_specs(self):
+        validator = JSONSchemaValidator(self.product.kind.item_specs_schema)
+
+        try:
+            validator(self.specs)
+        except ValidationError as e:
+            raise ValidationError({"specs": e.message}) from e
 
     @property
     def test_bench(self):

@@ -1,4 +1,5 @@
 from json import JSONEncoder
+from string import Formatter
 
 
 class JSONSetEncoder(JSONEncoder):
@@ -35,3 +36,9 @@ def short_description(description: str):
         return function
 
     return decorator
+
+
+def get_placeholders(string: str):
+    return (
+        name for text, name, spec, conv in Formatter().parse(string) if name is not None
+    )

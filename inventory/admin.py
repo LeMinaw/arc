@@ -25,7 +25,7 @@ class TestBenchAdmin(BaseAdmin):
 
 @register(Item)
 class ItemAdmin(BaseAdmin):
-    list_display = ["__str__", "in_stock", "id", "reference", "add_date"]
+    list_display = ["__str__", "in_stock", "id", "reference", "add_date", "out_date"]
 
     list_filter = ["product__kind", "product__line", "in_stock"]
 

@@ -11,7 +11,7 @@ from django.db.models import (
     URLField,
 )
 
-from common.utils import JSONSetEncoder, make_default_object_schema
+from common.utils import JSONSetEncoder, get_placeholders, make_default_object_schema
 from common.validators import JSONSchemaValidator
 
 
@@ -118,6 +118,56 @@ class ProductKind(Category):
         verbose_name="format du nom",
         help_text="Gabarit Python spécifiant le nom des produits.",
     )
+    item_name_format = CharField(
+        default="{PRODUCT}",
+        max_length=128,
+        verbose_name="format du nom des objets",
+        help_text=(
+            "Gabarit Python spécifiant le nom des objets. {PRODUCT} cible le nom des "
+            "produits."
+        ),
+    )
+    item_specs_schema = JSONField(
+        max_length=1024,
+        validators=[JSONSchemaValidator()],
+        default=make_default_object_schema,
+        encoder=JSONSetEncoder,
+        verbose_name="schéma de spécifications des objets",
+        help_text=(
+            "Schéma des spécifications propres aux instances d'objets liées à cette "
+            "catégorie de produits, au format JSONSchema 2020-12."
+        ),
+    )
+
+    def clean(self):
+        self._validate_name_format()
+        self._validate_item_name_format()
+
+    def _validate_name_format(self):
+        placeholders = set(get_placeholders(self.name_format))
+        avalaible_properties = set(self.coalesce_specs_schema()["required"])
+
+        if unavalaible_placeholders := placeholders - avalaible_properties:
+            raise ValidationError(
+                {
+                    "name_format": (
+                        f"Les propriétés {unavalaible_placeholders} sont non requises."
+                    )
+                }
+            )
+
+    def _validate_item_name_format(self):
+        placeholders = set(get_placeholders(self.item_name_format))
+        avalaible_properties = {*self.item_specs_schema["required"], "PRODUCT"}
+
+        if unavalaible_placeholders := placeholders - avalaible_properties:
+            raise ValidationError(
+                {
+                    "item_name_format": (
+                        f"Les propriétés {unavalaible_placeholders} sont non requises."
+                    )
+                }
+            )
 
     class Meta:
         verbose_name = "type de produit"
