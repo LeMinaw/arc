@@ -25,7 +25,7 @@
     const uris = [...new Set(products.value.map(product => product.line))]
 
     lines.value = await Promise.all(
-      uris.map(async uri => fetch(uri).then(r => r.json()))
+      uris.filter(uri => uri !== null).map(async uri => fetch(uri).then(r => r.json()))
     )
   })
 </script>
