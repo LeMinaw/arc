@@ -8,3 +8,5 @@ export const normalize = str =>
     .replace(/\p{Diacritic}/gu, "")
     .replace(/[^a-zA-Z0-9]/gi, "")
     .toLowerCase()
+
+export const isEmpty = obj => Object.keys(obj).length === 0
