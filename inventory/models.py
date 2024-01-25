@@ -64,6 +64,13 @@ class Item(Model):
             )
         return str(self.product)
 
+    def save(self, *args, **kwargs):
+        # We need to manually call clean because DRF does not do this anymore since
+        # v3.0, and does not provide any reasonable way to do this kind of validation
+        self.clean()
+
+        super().save(*args, **kwargs)
+
     def clean(self):
         self._validate_specs()
 
@@ -136,13 +143,28 @@ class Test(Model):
     def __str__(self):
         return f"{self.item} - {localize(self.date)}"  # :%d/%m/%Y, %H:%M
 
+    def save(self, *args, **kwargs):
+        # If a test does not contain data anymore, the whole object can be deleted
+        if not self.data:
+            if self.pk is not None:
+                self.delete()
+
+        else:
+            # We need to manually call clean because DRF does not do this anymore since
+            # v3.0, and does not provide any reasonable way to do this kind of
+            # validation
+            self.clean()
+
+            super().save(*args, **kwargs)
+
     def clean(self):
         self._validate_test_data()
 
     def _validate_test_data(self):
         if not (bench := self.item.test_bench):
             raise ValidationError(
-                f"Aucun banc d'essai défini pour le type de produit {self.kind}"
+                "Aucun banc d'essai défini pour le type de produit "
+                f"{self.item.product.kind}"
             )
 
         validator = JSONSchemaValidator(bench.data_schema)
